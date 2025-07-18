@@ -7,7 +7,7 @@ let processPath = '/process'
 
 export default withMermaid(
     defineConfig({
-        base: '/VAeR/',
+        base: '/report/',
         title: "Visione Artificiale e Riconoscimento",
         description: "localissazione fratture ossee in immagini radiografiche",
         themeConfig: {

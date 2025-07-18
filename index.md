@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Report
-      link: report/1-Scoping
+      link: report/1-introduzione.md
 ---
 
 ## Componenti del Gruppo
