@@ -19,11 +19,11 @@ export default withMermaid(
             sidebar: [
                 {text: 'Report',
                     items: [
-                        {text: 'Introduzione', link: `${reportPath}/1-introductione`},
+                        {text: 'Introduzione', link: `${reportPath}/1-introduzione`},
                         {text: 'Stato dell\'arte', link: `${reportPath}/2-sa`},
                         {text: 'Approccio sviluppato', link: `${reportPath}/3-approccio`},
-                        {text: 'Valutasioni Sperimentali', link: `${reportPath}/4-valutasioni`},
-                        {text: 'Conclusioni', link: `${reportPath}/5-Conclusioni`}
+                        {text: 'Valutasioni Sperimentali', link: `${reportPath}/4-valutazioni`},
+                        {text: 'Conclusioni', link: `${reportPath}/5-conclusioni`}
                     ]
                 }
             ]
