@@ -1,61 +1,58 @@
-# Stato dell'arte
-
-
 # Stato dell'Arte: Riconoscimento e Localizzazione delle Fratture Ossee nelle Radiografie
 
 ## Introduzione
 
-Il riconoscimento automatico delle fratture ossee nelle radiografie rappresenta uno dei campi più attivi nell'intelligenza artificiale medica. Le fratture non diagnosticate sono l'errore diagnostico più comune nei dipartimenti di emergenza e possono portare a ritardi nel trattamento e disabilità a lungo termine. Si stima che 1,71 miliardi di pazienti in tutto il mondo soffrano di problemi muscoloscheletrici, rendendo questo campo di ricerca particolarmente rilevante.
+Il riconoscimento automatico delle fratture ossee nelle radiografie rappresenta uno dei campi più attivi nell'intelligenza artificiale medica ([Frontiers in Medicine, 2025](https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2024.1506686/full)). Le fratture non diagnosticate sono l'errore diagnostico più comune nei dipartimenti di emergenza e possono portare a ritardi nel trattamento e disabilità a lungo termine ([npj Digital Medicine, 2020](https://www.nature.com/articles/s41746-020-00352-w)). Si stima che 1,71 miliardi di pazienti in tutto il mondo soffrano di problemi muscoloscheletrici, rendendo questo campo di ricerca particolarmente rilevante.
 
 ## Approcci Basati su Deep Learning
 
 ### Reti Neurali Convoluzionali (CNN)
 
-Le CNN rappresentano l'approccio dominante per la rilevazione delle fratture ossee. Le reti di object detection basate su deep learning possono essere addestrate per rilevare e localizzare accuratamente le fratture nelle radiografie del polso. Diversi studi hanno dimostrato l'efficacia di queste tecniche in contesti clinici reali.
+Le CNN rappresentano l'approccio dominante per la rilevazione delle fratture ossee ([PMC - Diagnostics, 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9600559/)). Le reti di object detection basate su deep learning possono essere addestrate per rilevare e localizzare accuratamente le fratture nelle radiografie del polso ([Radiology: Artificial Intelligence, 2019](https://pubs.rsna.org/doi/full/10.1148/ryai.2019180001)). Diversi studi hanno dimostrato l'efficacia di queste tecniche in contesti clinici reali.
 
 ### Transfer Learning
 
-Il transfer learning si è dimostrato un metodo di rete neurale efficiente per la rilevazione precoce e il trattamento tempestivo delle fratture. Questo approccio consente di utilizzare modelli pre-addestrati su grandi dataset per migliorare le prestazioni su dataset medici più piccoli.
+Il transfer learning si è dimostrato un metodo di rete neurale efficiente per la rilevazione precoce e il trattamento tempestivo delle fratture ([BMC Medical Imaging, 2024](https://bmcmedimaging.biomedcentral.com/articles/10.1186/s12880-024-01546-4)). Questo approccio consente di utilizzare modelli pre-addestrati su grandi dataset per migliorare le prestazioni su dataset medici più piccoli.
 
 ## Architetture YOLO per la Localizzazione
 
 ### YOLOv8 e Miglioramenti
 
-L'integrazione del meccanismo Hybrid-Attention (HA) nell'architettura YOLOv8 offre una soluzione robusta per migliorare accuratezza, affidabilità e velocità nelle applicazioni di imaging medico, con risultati sperimentali che dimostrano un aumento del 20% della Mean Average Precision.
+L'integrazione del meccanismo Hybrid-Attention (HA) nell'architettura YOLOv8 offre una soluzione robusta per migliorare accuratezza, affidabilità e velocità nelle applicazioni di imaging medico, con risultati sperimentali che dimostrano un aumento del 20% della Mean Average Precision ([MDPI Algorithms, 2024](https://www.mdpi.com/1999-4893/17/11/471)).
 
-Il modello FCE-YOLOv8 con Feature Context Excitation Modules è stato sviluppato specificamente per la rilevazione delle fratture nelle radiografie del polso pediatrico, dimostrando l'adattabilità dell'architettura YOLO per applicazioni mediche specializzate.
+Il modello FCE-YOLOv8 con Feature Context Excitation Modules è stato sviluppato specificamente per la rilevazione delle fratture nelle radiografie del polso pediatrico ([arXiv, 2024](https://arxiv.org/html/2410.01031v1)), dimostrando l'adattabilità dell'architettura YOLO per applicazioni mediche specializzate.
 
 ### YOLOv4 e Visualizzazione 3D
 
-L'algoritmo YOLOv4 offre supporto prezioso nella rilevazione delle fratture e nel processo decisionale diagnostico, utilizzando CSPDarkNet-53 per diversificare i dati in ingresso e Spatial Pyramid Pooling con Path Aggregation Network per l'estrazione delle feature.
+L'algoritmo YOLOv4 offre supporto prezioso nella rilevazione delle fratture e nel processo decisionale diagnostico ([MDPI Diagnostics, 2024](https://www.mdpi.com/2075-4418/14/1/11)), utilizzando CSPDarkNet-53 per diversificare i dati in ingresso e Spatial Pyramid Pooling con Path Aggregation Network per l'estrazione delle feature.
 
 ## Approcci Multi-Sito e Validazione Clinica
 
-Attraverso uno studio multi-sito, è stato dimostrato che un sistema di deep learning può identificare accuratamente le fratture in tutto il sistema muscoloscheletrico adulto. Questa validazione su larga scala rappresenta un passo importante verso l'implementazione clinica.
+Attraverso uno studio multi-sito, è stato dimostrato che un sistema di deep learning può identificare accuratamente le fratture in tutto il sistema muscoloscheletrico adulto ([npj Digital Medicine, 2020](https://www.nature.com/articles/s41746-020-00352-w)). Questa validazione su larga scala rappresenta un passo importante verso l'implementazione clinica.
 
 ## Ensemble Learning
 
-I modelli ensemble hanno dimostrato di automatizzare efficacemente la rilevazione delle fratture ossee nelle radiografie dell'omero, mostrando prestazioni superiori rispetto ai modelli di deep learning modificati individualmente.
+I modelli ensemble hanno dimostrato di automatizzare efficacemente la rilevazione delle fratture ossee nelle radiografie dell'omero ([ScienceDirect, 2024](https://www.sciencedirect.com/science/article/pii/S0009926024004197)), mostrando prestazioni superiori rispetto ai modelli di deep learning modificati individualmente.
 
 ## Sfide e Limitazioni
 
-L'accuratezza e la precisione dei modelli AI esistenti soffrono quando vengono utilizzati per oggetti piccoli e facilmente trascurabili come le fratture ossee, il che influisce sull'applicabilità e l'efficacia dei modelli in un ambiente clinico.
+L'accuratezza e la precisione dei modelli AI esistenti soffrono quando vengono utilizzati per oggetti piccoli e facilmente trascurabili come le fratture ossee ([ScienceDirect, 2023](https://www.sciencedirect.com/science/article/pii/S2665917423000594)), il che influisce sull'applicabilità e l'efficacia dei modelli in un ambiente clinico.
 
 ## Applicazioni Specifiche
 
 ### Fratture del Polso
 
-La diagnosi e il trattamento delle anomalie del polso, in particolare le fratture del radio distale e dell'ulna, rappresentano una preoccupazione cruciale tra bambini e adolescenti, con diversi modelli YOLO sviluppati specificamente per questa applicazione.
+La diagnosi e il trattamento delle anomalie del polso, in particolare le fratture del radio distale e dell'ulna, rappresentano una preoccupazione cruciale tra bambini e adolescenti ([ScienceDirect, 2024](https://www.sciencedirect.com/science/article/pii/S1746809424002027)), con diversi modelli YOLO sviluppati specificamente per questa applicazione.
 
 ### Supporto Remoto
 
-La ricerca ha esplorato l'uso di modelli di deep learning per l'assistenza remota ai pazienti con fratture ossee, riducendo la necessità di frequenti esami e interventi professionali.
+La ricerca ha esplorato l'uso di modelli di deep learning per l'assistenza remota ai pazienti con fratture ossee ([Taylor & Francis, 2024](https://www.tandfonline.com/doi/full/10.1080/08839514.2024.2423326)), riducendo la necessità di frequenti esami e interventi professionali.
 
 ## Direzioni Future
 
-L'intelligenza artificiale (AI) e, più specificamente, il deep learning (DL) stanno ricevendo un'attenzione significativa per assistere i radiologi nella rilevazione delle fratture ossee. Le ossa sono un componente fondamentale dell'anatomia umana, che consente il movimento e il supporto, e le fratture ossee sono prevalenti nel corpo umano, rendendo necessario lo sviluppo di sistemi automatizzati sempre più accurati.
+L'intelligenza artificiale (AI) e, più specificamente, il deep learning (DL) stanno ricevendo un'attenzione significativa per assistere i radiologi nella rilevazione delle fratture ossee ([SICOT-J, 2023](https://www.sicot-j.org/articles/sicotj/full_html/2023/01/sicotj230041/sicotj230041.html)). Le ossa sono un componente fondamentale dell'anatomia umana, che consente il movimento e il supporto, e le fratture ossee sono prevalenti nel corpo umano, rendendo necessario lo sviluppo di sistemi automatizzati sempre più accurati.
 
-## Fonti Bibliografiche
+## Riferimenti Bibliografici
 
 1. **Frontiers in Medicine (2025)** - "Diagnosis and detection of bone fracture in radiographic images using deep learning approaches"  
    URL: https://www.frontiersin.org/journals/medicine/articles/10.3389/fmed.2024.1506686/full
