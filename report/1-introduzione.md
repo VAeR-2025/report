@@ -1,1 +1,9 @@
 # Introduzione
+
+La diagnostica radiologica rappresenta uno dei pilastri fondamentali della medicina moderna, permettendo ai clinici di identificare patologie e lesioni attraverso tecniche di imaging non invasive. Tra le applicazioni più critiche della radiologia si trova il riconoscimento di fratture ossee, una competenza essenziale che richiede anni di formazione specialistica e un'esperienza clinica consolidata per essere padroneggiata efficacemente.
+
+Il riconoscimento tempestivo e accurato delle fratture ossee riveste un'importanza cruciale nella pratica medica quotidiana. Una diagnosi rapida e precisa può determinare la differenza tra un recupero completo e complicazioni permanenti per il paziente. Tuttavia, l'interpretazione delle immagini radiografiche presenta sfide significative: le fratture possono manifestarsi in forme estremamente variabili, alcune lesioni risultano difficilmente visibili anche all'occhio esperto, e la pressione temporale nei contesti di emergenza può aumentare il rischio di errori diagnostici.
+
+In questo scenario, l'intelligenza artificiale e, in particolare, le reti neurali profonde (deep neural networks) emergono come strumenti rivoluzionari capaci di trasformare radicalmente l'approccio alla diagnostica per immagini. Le tecnologie di deep learning hanno dimostrato capacità straordinarie nell'analisi e classificazione di immagini mediche, raggiungendo in molti casi performance che si avvicinano o superano quelle degli specialisti umani.
+
+L'obbiettivo di questo progetto e' quello di addestrare un modello di deep learning in grado di riconoscere e localizzare fratture ossee in immagini radiografiche, con particolare attenzione alla riduzione dei falsi positivi e al miglioramento della sensibilità diagnostica. Il progetto si propone di sviluppare un sistema che possa essere utilizzato come supporto decisionale per i radiologi, contribuendo a una diagnosi più rapida e accurata.
