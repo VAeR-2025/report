@@ -202,6 +202,18 @@ process_images_labels(train_images, train_labels, angles=[180])
 
 Questa procedura ha permesso di raddoppiare il numero di esempi nel set di addestramento, introducendo varianti che il modello può incontrare nel mondo reale (es. oggetti capovolti), contribuendo così a una maggiore robustezza durante l’inferenza.
 
+### funzioni di preprocessing scartate
+
+Durante la fase di pre-processing è stata inizialmente testata una funzione dedicata alla correzione automatica del contrasto delle immagini radiografiche tramite l’algoritmo CLAHE (Contrast Limited Adaptive Histogram Equalization). La funzione , applicata alle immagini della cartella di input, mirava ad aumentare la visibilità dei dettagli nelle immagini, specialmente in presenza di basse differenze di luminosità.
+
+Nonostante le basi teoriche solide e la buona riuscita tecnica dell’applicazione (con successo su tutte le immagini processate), i risultati ottenuti in fase di addestramento non hanno mostrato miglioramenti significativi nelle performance del modello. In alcuni casi, l’eccessiva enfatizzazione dei bordi introdotta dal CLAHE sembrava addirittura disturbare il processo di localizzazione degli oggetti, compromettendo la qualità dell’apprendimento.
+
+Alla luce di queste considerazioni, si è deciso di non includere questa fase nel pre-processing finale, preferendo mantenere le immagini nel loro contrasto originale, più vicino alle condizioni reali del dominio radiografico in cui il modello verrà utilizzato. Questo esempio sottolinea l'importanza della sperimentazione nel processo di sviluppo: non tutte le trasformazioni, pur valide a livello teorico, si traducono automaticamente in benefici pratici nel contesto specifico del deep learning.
+
+![Esempio di immagine con CLAHE](../diagram/immagini-preproces22.png)
+
+Nelle immagini sopra si puo notare la differenza tra quelle di simistra che sono le immagini originali e quelle di destra che sono state preprocessate con l'algoritmo CLAHE. Si puo notare come le immagini preprocessate abbiano un contrasto piu elevato, che pero non e' stato utile per il modello.
+
 ## Indicatori di Prestazione Utilizzati
 
 Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di fratture ossee, sono stati impiegati diversi indicatori di prestazione standard nel campo del machine learning e della computer vision. La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione multidimensionale che consideri sia gli aspetti di classificazione che quelli di localizzazione spaziale, elementi entrambi cruciali per un sistema di diagnostica medica. Gli indicatori principali utilizzati comprendono Precision, Recall, mAP50 e mAP50-95, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
