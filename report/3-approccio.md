@@ -214,6 +214,19 @@ Alla luce di queste considerazioni, si è deciso di non includere questa fase ne
 
 Nelle immagini sopra si puo notare la differenza tra quelle di simistra che sono le immagini originali e quelle di destra che sono state preprocessate con l'algoritmo CLAHE. Si puo notare come le immagini preprocessate abbiano un contrasto piu elevato, che pero non e' stato utile per il modello.
 
+## Addestramento del modello
+
+L’addestramento del modello è stato eseguito utilizzando i pesi pre-addestrati e ottimizzati per bounding box orientati, impiegando la funzione `train()` della libreria Ultralytics. Il processo ha utilizzato il dataset opportunamente annotato e preprocessato, seguendo i parametri riportati di seguito:
+
+- **`task='detect'`**: specifica che il modello è stato addestrato per un compito di *object detection*.
+- **`mode='train'`**: imposta il modello in modalità addestramento.
+- **`data='BoneFractureYolo8/data.yaml'`**: percorso del file YAML contenente le informazioni sul dataset, classi, e suddivisione training/validation.
+- **`epochs=18`**: numero di epoche selezionato per garantire un equilibrio tra accuratezza e tempo computazionale.
+- **`seed=42`**: fissato per assicurare la riproducibilità dei risultati.
+- **`imgsz=640`**: risoluzione a cui le immagini sono state ridimensionate, coerente con il pre-processing e compatibile con YOLOv8.
+
+Questa configurazione ha permesso di ottenere un buon compromesso tra accuratezza, robustezza e tempo di addestramento.
+
 ## Indicatori di Prestazione Utilizzati
 
 Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di fratture ossee, sono stati impiegati diversi indicatori di prestazione standard nel campo del machine learning e della computer vision. La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione multidimensionale che consideri sia gli aspetti di classificazione che quelli di localizzazione spaziale, elementi entrambi cruciali per un sistema di diagnostica medica. Gli indicatori principali utilizzati comprendono Precision, Recall, mAP50 e mAP50-95, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
