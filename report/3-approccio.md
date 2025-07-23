@@ -28,6 +28,121 @@ Vista la particolare conformazione delle bounding box presenti nel dataset, iniz
 
 Per superare queste limitazioni, si è optato per l'adozione del modello YOLOv8m-OBB (Oriented Bounding Box), una variante specializzata della famiglia YOLO che supporta nativamente bounding box orientate e composte da un numero variabile di punti. YOLOv8m-OBB è specificamente progettato per gestire oggetti con forme irregolari o orientamenti arbitrari, utilizzando bounding box definite da poligoni che si adattano meglio alla geometria reale degli oggetti da rilevare. Questo modello permette di ottenere una localizzazione più precisa degli oggetti target, riducendo significativamente l'inclusione di background non rilevante e migliorando di conseguenza l'efficienza computazionale e l'accuratezza del processo di detection. La capacità di elaborare bounding box non orientate secondo gli assi cartesiani standard consente al modello di adattarsi ottimalmente alle caratteristiche geometriche specifiche del dataset, garantendo una convergenza più stabile durante l'addestramento.
 
+## preprocessing delle immagini
+
+Il preprocessing delle immagini ha rappresentato una fase cruciale per garantire l'uniformità dei dati in input al modello. Questa fase è stata suddivisa in due operazioni principali che hanno permesso di ottimizzare le prestazioni del modello YOLOv8m-OBB.
+
+### normalizzazione delle immagini
+
+Per tutte le immagini del dataset è stata applicata una normalizzazione dei valori pixel, operazione fondamentale per stabilizzare il processo di addestramento e migliorare la convergenza della rete neurale. La normalizzazione permette di uniformare la distribuzione dei valori di intensità luminosa, riducendo l'impatto delle variazioni di illuminazione e contrasto presenti nelle immagini originali. La funzione implementata opera nello spazio colore HSV, normalizzando specificamente il canale V (Value) che rappresenta l'intensità luminosa, mantenendo invariati i canali H (Hue) e S (Saturation) per preservare le informazioni cromatiche originali, la funzione accetta come input il percorso della cartella contenente le immagini a cui sara applicata a tutte la normalizzazione.
+
+```python
+def normalize_image(cartella_immagini):
+    for file in os.listdir(cartella_immagini):
+        if file.endswith(".jpg"):
+            percorso_file = os.path.join(cartella_immagini, file)
+            img = cv2.imread(percorso_file)
+            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            h, s, v = cv2.split(hsv)
+            v = cv2.normalize(v, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
+            hsv_norm = cv2.merge([h, s, v])
+            img_norm = cv2.cvtColor(hsv_norm, cv2.COLOR_HSV2BGR)
+            cv2.imwrite(percorso_file, img_norm)
+    print("Elaborazione completata!")
+```
+
+### Resize delle immagini
+
+Per garantire una corretta elaborazione delle immagini da parte del modello YOLOv8m-OBB, ciascuna immagine è stata uniformata in termini di dimensioni attraverso un processo di ridimensionamento con mantenimento delle proporzioni, seguito dall'applicazione di padding nero. Questo approccio ha permesso di evitare distorsioni geometriche che avrebbero potuto compromettere l'accuratezza del modello nella localizzazione degli oggetti. La tecnica del padding consente di ottenere immagini perfettamente quadrate, preservando le proporzioni originarie degli oggetti. Successivamente, tutte le immagini sono state ridimensionate a una risoluzione standard di 640×640 pixel, scelta che rappresenta un buon compromesso tra qualità visiva e prestazioni computazionali in fase di inferenza. Le coordinate dei bounding box sono state correttamente adattate in base alla trasformazione subita dall’immagine, assicurando così la coerenza tra le annotazioni e i nuovi riferimenti spaziali.
+
+```python
+def resize_with_padding(image, target_size):
+    """
+    Ridimensiona l'immagine mantenendo le proporzioni e aggiungendo padding nero
+    per raggiungere la dimensione target (es. 640x640), senza distorcere l'immagine.
+    """
+    old_h, old_w = image.shape[:2]
+    target_w, target_h = target_size
+
+    # Calcola il fattore di scala mantenendo il rapporto d'aspetto originale
+    scale = min(target_w / old_w, target_h / old_h)
+    new_w = int(old_w * scale)
+    new_h = int(old_h * scale)
+
+    # Ridimensiona l'immagine mantenendo le proporzioni
+    resized_image = cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
+
+    # Calcola il padding necessario per centrare l'immagine nella nuova dimensione
+    pad_w = (target_w - new_w) // 2
+    pad_h = (target_h - new_h) // 2
+
+    # Applica il padding nero ai bordi
+    padded_image = cv2.copyMakeBorder(
+        resized_image,
+        pad_h, target_h - new_h - pad_h,
+        pad_w, target_w - new_w - pad_w,
+        cv2.BORDER_CONSTANT,
+        value=[0, 0, 0]
+    )
+
+    return padded_image, scale, pad_w, pad_h
+
+
+def update_labels(labels_path, scale, pad_w, pad_h, old_w, old_h, target_size):
+    """
+    Aggiorna le coordinate normalizzate (YOLO format xywh) delle etichette
+    in base al ridimensionamento e padding applicato all'immagine.
+    """
+    target_w, target_h = target_size
+    updated_labels = []
+
+    with open(labels_path, 'r') as file:
+        lines = file.readlines()
+
+    for line in lines:
+        parts = line.strip().split()
+        class_id = parts[0]
+        label_parts = list(map(float, parts[1:]))
+
+        # Aggiorna le coordinate (x, y) e dimensioni (w, h) relative
+        for j in range(0, len(label_parts), 2):
+            label_parts[j] = (label_parts[j] * old_w * scale + pad_w) / target_w
+            label_parts[j + 1] = (label_parts[j + 1] * old_h * scale + pad_h) / target_h
+
+        updated_labels.append(f"{class_id} " + " ".join(map(str, label_parts)) + "\n")
+
+    # Sovrascrive il file con le nuove etichette aggiornate
+    with open(labels_path, 'w') as file:
+        file.writelines(updated_labels)
+
+
+def process_folder(images_folder, labels_folder, target_size=(640, 640)):
+    """
+    Applica il ridimensionamento con padding a tutte le immagini della cartella,
+    e aggiorna le rispettive etichette per mantenerle corrette rispetto alle nuove dimensioni.
+    """
+    for filename in os.listdir(images_folder):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            image_path = os.path.join(images_folder, filename)
+            labels_path = os.path.join(labels_folder, os.path.splitext(filename)[0] + '.txt')
+
+            image = cv2.imread(image_path)
+            if image is None:
+                print(f"Errore nel leggere l'immagine: {image_path}")
+                continue
+
+            old_h, old_w = image.shape[:2]
+            resized_image, scale, pad_w, pad_h = resize_with_padding(image, target_size)
+
+            # Se esiste un file di etichette, aggiorna le coordinate
+            if os.path.exists(labels_path):
+                update_labels(labels_path, scale, pad_w, pad_h, old_w, old_h, target_size)
+
+            # Sovrascrive l'immagine con quella ridimensionata
+            cv2.imwrite(image_path, resized_image)
+```
+
+Il codice riportato implementa un processo automatizzato per la preparazione di dataset di immagini e relative annotazioni in formato YOLO. In particolare, la funzione process_folder itera su tutte le immagini di una cartella, applicando il ridimensionamento con padding tramite resize_with_padding, che preserva il rapporto d’aspetto originale evitando distorsioni. Dopo il ridimensionamento, la funzione update_labels ricalcola le coordinate dei bounding box per adattarle alla nuova risoluzione, tenendo conto della scala applicata e del padding aggiunto. Questo garantisce che le annotazioni restino accurate e coerenti con le immagini modificate. L’intero processo avviene in-place, ovvero sovrascrivendo le immagini e i file di etichette originali, evitando la creazione di duplicati e mantenendo ordinata la struttura del dataset. Tale approccio è particolarmente utile per garantire la compatibilità con modelli deep learning, come YOLOv8m-OBB, che richiedono input standardizzati.
 
 ## Indicatori di Prestazione Utilizzati
 
