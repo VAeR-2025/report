@@ -144,6 +144,64 @@ def process_folder(images_folder, labels_folder, target_size=(640, 640)):
 
 Il codice riportato implementa un processo automatizzato per la preparazione di dataset di immagini e relative annotazioni in formato YOLO. In particolare, la funzione process_folder itera su tutte le immagini di una cartella, applicando il ridimensionamento con padding tramite resize_with_padding, che preserva il rapporto d’aspetto originale evitando distorsioni. Dopo il ridimensionamento, la funzione update_labels ricalcola le coordinate dei bounding box per adattarle alla nuova risoluzione, tenendo conto della scala applicata e del padding aggiunto. Questo garantisce che le annotazioni restino accurate e coerenti con le immagini modificate. L’intero processo avviene in-place, ovvero sovrascrivendo le immagini e i file di etichette originali, evitando la creazione di duplicati e mantenendo ordinata la struttura del dataset. Tale approccio è particolarmente utile per garantire la compatibilità con modelli deep learning, come YOLOv8m-OBB, che richiedono input standardizzati.
 
+### Data Augmentation
+
+Per migliorare la capacità generalizzativa del modello e aumentare la varietà dei dati disponibili durante l’addestramento, si è scelto di applicare una strategia di data augmentation basata sulla rotazione delle immagini e delle relative annotazioni. In particolare, è stata definita una funzione (process_images_labels) che consente di generare nuove versioni delle immagini ruotandole di 90°, 180° o 270°, preservando l'informazione spaziale degli oggetti tramite un aggiornamento coerente delle etichette nel formato YOLO. Questo aggiornamento è gestito dalla funzione rotate_label, che ricalcola le coordinate normalizzate dei bounding box in base all’angolo di rotazione, mantenendo l’allineamento corretto tra immagine e annotazione.
+
+```python
+def rotate_label(label_path, new_label_path, angle):
+    with open(label_path, 'r') as file:
+        lines = file.readlines()
+    new_lines = []
+    for line in lines:
+        parts = line.strip().split()
+        class_id = parts[0]
+        coords = list(map(float, parts[1:]))
+        new_coords = []
+        for i in range(0, len(coords), 2):
+            x, y = coords[i], coords[i+1]
+            if angle == 90:
+                new_x, new_y = 1 - y, x
+            elif angle == 180:
+                new_x, new_y = 1 - x, 1 - y
+            elif angle == 270:
+                new_x, new_y = y, 1 - x
+            else:
+                raise ValueError("Unsupported angle")
+            new_coords.extend([new_x, new_y])
+        new_lines.append(f"{class_id} " + " ".join(map(str, new_coords)) + "\n")
+        with open(new_label_path, 'w') as file:
+            file.writelines(new_lines)
+
+def process_images_labels(image_folder, label_folder, angles):
+    angles = [90, 180, 270]
+    for label_file in os.listdir(label_folder):
+        if not label_file.endswith('.txt'):
+            continue
+        label_path = os.path.join(label_folder, label_file)
+        image_path = os.path.join(image_folder, label_file.replace('.txt', '.jpg'))
+        if os.path.exists(image_path):
+            with open(label_path, 'r') as f:
+                if f.read().strip():
+                    image = cv2.imread(image_path)
+                    for angle in angles:
+                        rotated_image = cv2.rotate(image, {90: cv2.ROTATE_90_CLOCKWISE,
+                                                           180: cv2.ROTATE_180,
+                                                           270: cv2.ROTATE_90_COUNTERCLOCKWISE}[angle])
+                        new_image_path = os.path.join(image_folder, label_file.replace('.txt', f'_rotated{angle}.jpg'))
+                        cv2.imwrite(new_image_path, rotated_image)
+                        new_label_path = os.path.join(label_folder, label_file.replace('.txt', f'_rotated{angle}.txt'))
+                        rotate_label(label_path, new_label_path, angle)
+```
+
+Per evitare un eccessivo aumento della dimensione del dataset — che avrebbe potuto portare a un overfitting sul training set — si è optato per una rotazione limitata a 180°, sufficiente a incrementare la varietà delle immagini senza compromettere l’equilibrio tra complessità e generalizzazione. Il processo è stato attivato tramite la chiamata:
+
+```python
+process_images_labels(train_images, train_labels, angles=[180])
+```
+
+Questa procedura ha permesso di raddoppiare il numero di esempi nel set di addestramento, introducendo varianti che il modello può incontrare nel mondo reale (es. oggetti capovolti), contribuendo così a una maggiore robustezza durante l’inferenza.
+
 ## Indicatori di Prestazione Utilizzati
 
 Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di fratture ossee, sono stati impiegati diversi indicatori di prestazione standard nel campo del machine learning e della computer vision. La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione multidimensionale che consideri sia gli aspetti di classificazione che quelli di localizzazione spaziale, elementi entrambi cruciali per un sistema di diagnostica medica. Gli indicatori principali utilizzati comprendono Precision, Recall, mAP50 e mAP50-95, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
