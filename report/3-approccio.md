@@ -227,6 +227,12 @@ L’addestramento del modello è stato eseguito utilizzando i pesi pre-addestrat
 
 Questa configurazione ha permesso di ottenere un buon compromesso tra accuratezza, robustezza e tempo di addestramento.
 
+### metriche di valutazione
+
+Nella immagine seguente sono riportate le metriche di valutazione ottenute durante l'addestramento del modello. Si osserva che molto velocemente la loss del validation set inizia a crescere mentando la differenza tra training e validation, segno di un possibile overfitting. Per questo motivo il modello finale che e' stato scelto è quello ottenuto alla fine della tredicesima epoca, un compromesso tra la loss del training set e quella sul validation set.
+
+![metriche di valutazione](../diagram/metriche.png)
+
 ## Indicatori di Prestazione Utilizzati
 
 Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di fratture ossee, sono stati impiegati diversi indicatori di prestazione standard nel campo del machine learning e della computer vision. La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione multidimensionale che consideri sia gli aspetti di classificazione che quelli di localizzazione spaziale, elementi entrambi cruciali per un sistema di diagnostica medica. Gli indicatori principali utilizzati comprendono Precision, Recall, mAP50 e mAP50-95, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
