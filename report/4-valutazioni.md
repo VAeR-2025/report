@@ -25,3 +25,9 @@ Di seguito sono riportati alcuni esempi di predizioni effettuate dal modello, ch
 ![esempio di predizione](../diagram/risultati1.png)
 
 ![esempio di predizione](../diagram/risultati3.png)
+
+## Valutazione delle prestazioni
+
+Le prestazioni globali del modello risultano nel complesso accettabili, con una precisione generale pari a 0.546, che indica una discreta capacità del modello nel generare predizioni corrette rispetto ai falsi positivi. In particolare, si osservano ottimi risultati su classi come forearm fracture e humerus, dove la precisione raggiunge rispettivamente 0.857 e 0.875, segnalando un comportamento affidabile nella rilevazione di queste categorie. Al contrario, classi come elbow positive mostrano prestazioni nulle, con precisione e recall pari a 0, evidenziando l’incapacità del modello di rilevare tali istanze.
+
+Per quanto riguarda le metriche di mAP@0.5 e mAP@0.5:0.95, i valori ottenuti (0.392 e 0.203 rispettivamente) non sono da considerarsi negativi. Queste metriche, infatti, sono influenzate dalla qualità e dalla regolarità delle bounding box nel dataset. In particolare, la non uniformità o l’imprecisione nelle annotazioni può penalizzare il modello durante la valutazione, soprattutto nel caso della mAP@0.5:0.95, che richiede una maggiore accuratezza nella localizzazione. Di conseguenza, punteggi non elevati in queste metriche non necessariamente riflettono una scarsa capacità del modello, ma piuttosto limitazioni intrinseche nel dataset di validazione utilizzato.
