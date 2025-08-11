@@ -14,7 +14,7 @@ La rete neurale addestrata per il compito di object detection è stata valutata 
 
 I migliori risultati si osservano nelle classi forearm fracture e humerus, che raggiungono una mAP@0.5 rispettivamente di 0.673 e 0.642, con buona precisione e recall accettabile. Al contrario, la classe elbow positive mostra prestazioni nulle, segnalando una mancata capacità del modello di rilevare correttamente questa categoria. Le prestazioni sulle restanti classi evidenziano margini di miglioramento, soprattutto per quanto riguarda la capacità del modello di identificare tutte le istanze rilevanti (recall).
 
-![Confusion Matrix](../diagram/matrice-train.png)
+![Confusion Matrix](../diagram/matriceV.jpg)
 
 La matrice di confusione normalizzata ottenuta sul validation set evidenzia un aspetto critico del comportamento del modello: in numerosi casi, esso non effettua alcuna predizione per le istanze presenti, assegnando implicitamente gran parte dell'immagine alla classe di "background". Questo fenomeno si traduce in un elevato numero di falsi negativi, poiché le regioni contenenti oggetti di interesse non vengono riconosciute come tali.
 
