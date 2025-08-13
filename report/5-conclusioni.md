@@ -1,7 +1,25 @@
 # Conclusioni
 
-I risultati ottenuti durante l'addestramento del modello si sono dimostrati superiori rispetto a quelli mediamente riportati su Kaggle per lo stesso dataset, dove le metriche si aggirano intorno a una precisione di 0.395, un mAP@50 di circa 0.25 e un mAP@95 di circa 0.09. Tali miglioramenti sono attribuibili principalmente alla normalizzazione delle immagini e all’utilizzo di tecniche di data augmentation, che hanno contribuito a rendere il modello più robusto. Nonostante ciò, le prestazioni complessive restano limitate: il modello, così com'è, non sarebbe ancora in grado di affiancare efficacemente un operatore umano nell’analisi o nella classificazione delle immagini.
+I risultati ottenuti durante l'addestramento del modello si sono dimostrati **superiori** rispetto a quelli mediamente riportati su *Kaggle* per lo stesso dataset, dove le metriche si aggirano intorno a:
+- **Precisione** ≈ `0.395`
+- **mAP@0.5** ≈ `0.25`
+- **mAP@0.95** ≈ `0.09`
+
+Tali miglioramenti sono attribuibili principalmente a:
+- **Normalizzazione delle immagini**
+- **Tecniche di data augmentation**
+
+Questi accorgimenti hanno contribuito a rendere il modello **più robusto**.
+
+Tuttavia, le prestazioni complessive restano **limitate**: il modello, così com'è, **non sarebbe ancora in grado di affiancare efficacemente un operatore umano** nell’analisi o classificazione delle immagini.
+
+---
 
 ## Sviluppi futuri
 
-Per migliorare le performance del modello, un primo passo potrebbe essere l’ottimizzazione del dataset, in particolare garantendo una maggiore uniformità nella qualità e nel formato delle immagini, così da semplificare il preprocessing e fornire al modello dati più coerenti. Inoltre, lo sviluppo di nuove funzioni di preprocessing volte a uniformare meglio le immagini potrebbe contribuire a migliorare ulteriormente i risultati, permettendo al modello di generalizzare meglio e ridurre la variabilità non informativa nei dati di input.
+Per migliorare le performance del modello, un primo passo potrebbe essere:
+- **Ottimizzazione del dataset**, garantendo maggiore uniformità nella **qualità** e nel **formato** delle immagini  
+  → semplifica il *preprocessing* e fornisce dati più coerenti
+- Sviluppo di **nuove funzioni di preprocessing** per uniformare meglio le immagini  
+  → favorisce una migliore capacità di generalizzazione del modello  
+  → riduce la variabilità **non informativa** nei dati di input
