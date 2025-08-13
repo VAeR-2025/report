@@ -12,7 +12,7 @@ Le tipologie di fratture presenti nel dataset sono le seguenti:
 - Shoulder Fracture
 - Wrist Positive
 
-Il dataset è gia suddiviso in 3 parti: una cartella di training, una di validazione e una di test. La cartella di training contiene 3631 immagini, quella di validazione 348 immagini e quella di test 169 immagini. Anche se la suddivisione del dataset non è ottimale si è deciso di utilizzarla per poter mantenere una metrica di misura rispetto alle altre soluzioni caricate su Kaggle che sfruttano questo dataset.
+Il dataset è gia suddiviso in 3 parti: una cartella di training, una di validazione e una di test. La cartella di training contiene **3631** immagini, quella di validazione **348** immagini e quella di test **169** immagini. Anche se la suddivisione del dataset non è ottimale si è deciso di utilizzarla per poter mantenere una metrica di misura rispetto alle altre soluzioni caricate su Kaggle che sfruttano questo dataset.
 
 Le immagini sono in formato JPG e hanno dimenzioni varialbili, per questo motivo successivamente verra spiegato che e' stato necessario effettuare un resize delle immagini per poterle utilizzare per l'addestramento del modello.
 
@@ -20,13 +20,19 @@ Le immagini sono in formato JPG e hanno dimenzioni varialbili, per questo motivo
 
 nell'immagine sopra è possibile vedere un esempio di come sono strutturate le immagini del dataset, con le relative bounding box che delimitano le fratture ossee.
 
+---
+
 ## Problematiche delle Bounding Box Standard
 
 Vista la particolare conformazione delle bounding box presenti nel dataset, inizialmente si era considerata la possibilità di trasformarle in una versione standard, ovvero utilizzando le coordinate di un singolo punto di riferimento accompagnate da larghezza e altezza del rettangolo contenitore. Tuttavia, questo approccio presentava significative limitazioni: le bounding box risultanti erano eccessivamente grandi e spesso includevano ampie porzioni di sfondo non rilevante, creando un rapporto sfavorevole tra l'area dell'oggetto di interesse e l'area totale della bounding box. Questa sproporzione impediva alle reti neurali di convergere efficacemente durante il processo di addestramento, compromettendo le prestazioni del modello nella fase di detection degli oggetti target.
 
+---
+
 ## Il Modello YOLOv8m-OBB
 
 Per superare queste limitazioni, si è optato per l'adozione del modello YOLOv8m-OBB (Oriented Bounding Box), una variante specializzata della famiglia YOLO che supporta nativamente bounding box orientate e composte da un numero variabile di punti. YOLOv8m-OBB è specificamente progettato per gestire oggetti con forme irregolari o orientamenti arbitrari, utilizzando bounding box definite da poligoni che si adattano meglio alla geometria reale degli oggetti da rilevare. Questo modello permette di ottenere una localizzazione più precisa degli oggetti target, riducendo significativamente l'inclusione di background non rilevante e migliorando di conseguenza l'efficienza computazionale e l'accuratezza del processo di detection. La capacità di elaborare bounding box non orientate secondo gli assi cartesiani standard consente al modello di adattarsi ottimalmente alle caratteristiche geometriche specifiche del dataset, garantendo una convergenza più stabile durante l'addestramento.
+
+---
 
 ## preprocessing delle immagini
 
@@ -53,7 +59,13 @@ def normalize_image(cartella_immagini):
 
 ### Resize delle immagini
 
-Per garantire una corretta elaborazione delle immagini da parte del modello YOLOv8m-OBB, ciascuna immagine è stata uniformata in termini di dimensioni attraverso un processo di ridimensionamento con mantenimento delle proporzioni, seguito dall'applicazione di padding nero. Questo approccio ha permesso di evitare distorsioni geometriche che avrebbero potuto compromettere l'accuratezza del modello nella localizzazione degli oggetti. La tecnica del padding consente di ottenere immagini perfettamente quadrate, preservando le proporzioni originarie degli oggetti. Successivamente, tutte le immagini sono state ridimensionate a una risoluzione standard di 640×640 pixel, scelta che rappresenta un buon compromesso tra qualità visiva e prestazioni computazionali in fase di inferenza. Le coordinate dei bounding box sono state correttamente adattate in base alla trasformazione subita dall’immagine, assicurando così la coerenza tra le annotazioni e i nuovi riferimenti spaziali.
+Per garantire una corretta elaborazione delle immagini da parte del modello **YOLOv8m-OBB**, ciascuna immagine è stata uniformata in termini di dimensioni attraverso un processo di **ridimensionamento con mantenimento delle proporzioni**, seguito dall'applicazione di **padding nero**.
+
+Questo approccio ha permesso di evitare **distorsioni geometriche** che avrebbero potuto compromettere l'accuratezza del modello nella localizzazione degli oggetti. La tecnica del padding consente di ottenere immagini perfettamente **quadrate**, preservando le proporzioni originarie degli oggetti.
+
+Successivamente, tutte le immagini sono state ridimensionate a una risoluzione standard di **640×640 pixel**, scelta che rappresenta un buon compromesso tra **qualità visiva** e **prestazioni computazionali** in fase di inferenza.
+
+Le coordinate dei **bounding box** sono state correttamente adattate in base alla trasformazione subita dall’immagine, assicurando così la coerenza tra le annotazioni e i nuovi riferimenti spaziali.
 
 ```python
 def resize_with_padding(image, target_size):
@@ -142,11 +154,23 @@ def process_folder(images_folder, labels_folder, target_size=(640, 640)):
             cv2.imwrite(image_path, resized_image)
 ```
 
-Il codice riportato implementa un processo automatizzato per la preparazione di dataset di immagini e relative annotazioni in formato YOLO. In particolare, la funzione process_folder itera su tutte le immagini di una cartella, applicando il ridimensionamento con padding tramite resize_with_padding, che preserva il rapporto d’aspetto originale evitando distorsioni. Dopo il ridimensionamento, la funzione update_labels ricalcola le coordinate dei bounding box per adattarle alla nuova risoluzione, tenendo conto della scala applicata e del padding aggiunto. Questo garantisce che le annotazioni restino accurate e coerenti con le immagini modificate. L’intero processo avviene in-place, ovvero sovrascrivendo le immagini e i file di etichette originali, evitando la creazione di duplicati e mantenendo ordinata la struttura del dataset. Tale approccio è particolarmente utile per garantire la compatibilità con modelli deep learning, come YOLOv8m-OBB, che richiedono input standardizzati.
+Il codice riportato implementa un processo automatizzato per la preparazione di dataset di immagini e relative annotazioni in **formato YOLO**.
+
+In particolare, la funzione **`process_folder`** itera su tutte le immagini di una cartella, applicando il **ridimensionamento con padding** tramite **`resize_with_padding`**, che preserva il **rapporto d’aspetto** originale evitando distorsioni.
+
+Dopo il ridimensionamento, la funzione **`update_labels`** ricalcola le coordinate dei **bounding box** per adattarle alla nuova risoluzione, tenendo conto della **scala applicata** e del **padding aggiunto**. Questo garantisce che le annotazioni restino accurate e coerenti con le immagini modificate.
+
+L’intero processo avviene **in-place**, ovvero sovrascrivendo le immagini e i file di etichette originali, evitando la creazione di duplicati e mantenendo ordinata la struttura del dataset.  
+Tale approccio è particolarmente utile per garantire la compatibilità con modelli di **deep learning**, come **YOLOv8m-OBB**, che richiedono **input standardizzati**.
+
 
 ### Data Augmentation
 
-Per migliorare la capacità generalizzativa del modello e aumentare la varietà dei dati disponibili durante l’addestramento, si è scelto di applicare una strategia di data augmentation basata sulla rotazione delle immagini e delle relative annotazioni. In particolare, è stata definita una funzione (process_images_labels) che consente di generare nuove versioni delle immagini ruotandole di 90°, 180° o 270°, preservando l'informazione spaziale degli oggetti tramite un aggiornamento coerente delle etichette nel formato YOLO. Questo aggiornamento è gestito dalla funzione rotate_label, che ricalcola le coordinate normalizzate dei bounding box in base all’angolo di rotazione, mantenendo l’allineamento corretto tra immagine e annotazione.
+Per migliorare la **capacità generalizzativa** del modello e aumentare la varietà dei dati disponibili durante l’addestramento, si è scelto di applicare una strategia di **data augmentation** basata sulla **rotazione delle immagini** e delle relative annotazioni.
+
+In particolare, è stata definita una funzione **`process_images_labels`** che consente di generare nuove versioni delle immagini ruotandole di **90°**, **180°** o **270°**, preservando l'informazione spaziale degli oggetti tramite un aggiornamento coerente delle etichette nel formato YOLO.
+
+Questo aggiornamento è gestito dalla funzione **`rotate_label`**, che ricalcola le **coordinate normalizzate** dei bounding box in base all’angolo di rotazione, mantenendo l’allineamento corretto tra immagine e annotazione.
 
 ```python
 def rotate_label(label_path, new_label_path, angle):
@@ -214,6 +238,7 @@ Alla luce di queste considerazioni, si è deciso di non includere questa fase ne
 
 Nelle immagini sopra si puo notare la differenza tra quelle di simistra che sono le immagini originali e quelle di destra che sono state preprocessate con l'algoritmo CLAHE. Si puo notare come le immagini preprocessate abbiano un contrasto piu elevato, che pero non e' stato utile per il modello.
 
+---
 ## Addestramento del modello
 
 L’addestramento del modello è stato eseguito utilizzando i pesi pre-addestrati e ottimizzati per bounding box orientati, impiegando la funzione `train()` della libreria Ultralytics. Il processo ha utilizzato il dataset opportunamente annotato e preprocessato, seguendo i parametri riportati di seguito:
@@ -232,20 +257,66 @@ Questa configurazione ha permesso di ottenere un buon compromesso tra accuratezz
 Nella immagine seguente sono riportate le metriche di valutazione ottenute durante l'addestramento del modello. Si osserva che molto velocemente la loss del validation set inizia a crescere mentando la differenza tra training e validation, segno di un possibile overfitting. Per questo motivo il modello finale che e' stato scelto è quello ottenuto alla fine della tredicesima epoca, un compromesso tra la loss del training set e quella sul validation set.
 
 ![metriche di valutazione](../diagram/metriche2.png)
-
+---
 ## Indicatori di Prestazione Utilizzati
 
-Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di fratture ossee, sono stati impiegati diversi indicatori di prestazione standard nel campo del machine learning e della computer vision. La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione multidimensionale che consideri sia gli aspetti di classificazione che quelli di localizzazione spaziale, elementi entrambi cruciali per un sistema di diagnostica medica. Gli indicatori principali utilizzati comprendono Precision, Recall, mAP50 e mAP50-95, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
+Per valutare in modo rigoroso e completo le performance del modello di rete neurale sviluppato per il riconoscimento di **fratture ossee**, sono stati impiegati diversi **indicatori di prestazione** standard nel campo del **machine learning** e della **computer vision**.
+
+La selezione di queste metriche è stata guidata dalla necessità di ottenere una valutazione **multidimensionale** che consideri sia gli aspetti di **classificazione** che quelli di **localizzazione spaziale**, elementi entrambi cruciali per un sistema di diagnostica medica.
+
+Gli indicatori principali utilizzati comprendono **Precision**, **Recall**, **mAP50** e **mAP50-95**, ciascuno dei quali fornisce informazioni specifiche e complementari sulle capacità del modello.
+
 
 ### Precision
-La Precision rappresenta la frazione di predizioni positive che risultano effettivamente corrette, calcolata come il rapporto tra i veri positivi e la somma di veri positivi e falsi positivi (TP/(TP+FP)). Nel contesto del riconoscimento di fratture ossee, questa metrica indica la capacità del modello di evitare falsi allarmi, misurando quanto spesso una regione identificata dal sistema come contenente una frattura sia effettivamente fratturata. Una alta precision è fondamentale in applicazioni mediche per evitare diagnosi errate che potrebbero portare a trattamenti non necessari, stress del paziente e spreco di risorse sanitarie. Nei modelli di classificazione, la precision valuta l'accuratezza delle predizioni positive, mentre nei modelli di object detection come quelli utilizzati per la localizzazione di fratture, considera anche la corretta identificazione spaziale delle bounding box.
+La **Precision** rappresenta la frazione di predizioni positive che risultano effettivamente corrette, calcolata come:
+
+Precision = TP / (TP + FP)
+
+
+Nel contesto del riconoscimento di fratture ossee, questa metrica indica la capacità del modello di **evitare falsi allarmi**, misurando quanto spesso una regione identificata dal sistema come contenente una frattura sia effettivamente fratturata.
+
+Un’alta **precision** è fondamentale in applicazioni mediche per evitare diagnosi errate che potrebbero portare a trattamenti non necessari, stress del paziente e spreco di risorse sanitarie.
+
+Nei modelli di **classificazione**, valuta l’accuratezza delle predizioni positive; nei modelli di **object detection**, considera anche la corretta identificazione spaziale delle **bounding box**.
+
 
 ### Recall
-Il Recall, anche noto come sensibilità, misura la frazione di casi positivi reali che vengono correttamente identificati dal modello, calcolato come il rapporto tra veri positivi e la somma di veri positivi e falsi negativi (TP/(TP+FN)). In termini clinici, questa metrica quantifica la capacità del sistema di non "perdere" fratture effettivamente presenti, rappresentando un indicatore critico per la sicurezza del paziente. Un recall elevato è particolarmente importante nella diagnostica medica poiché una frattura non diagnosticata può comportare gravi conseguenze per il paziente, inclusi dolore prolungato, complicazioni e danni permanenti. Nei modelli di classificazione, il recall valuta la completezza del riconoscimento, mentre nei sistemi di detection considera la capacità di individuare tutte le istanze di fratture presenti nell'immagine, indipendentemente dalla loro posizione o dimensione.
+Il **Recall**, anche noto come **sensibilità**, misura la frazione di casi positivi reali che vengono correttamente identificati dal modello, calcolata come:
 
-### mAP50 
-La metrica mAP50 rappresenta la media delle Average Precision calcolate per tutte le classi del modello, utilizzando una soglia di Intersection over Union (IoU) pari a 0.5. L'IoU misura la sovrapposizione tra la bounding box predetta dal modello e quella reale annotata nei dati di ground truth, con 0.5 che rappresenta una soglia relativamente permissiva che considera corretta una predizione con almeno il 50% di sovrapposizione. Questa metrica è particolarmente rilevante per i modelli di object detection poiché valuta simultaneamente la capacità di classificazione e localizzazione spaziale. Nel contesto del riconoscimento di fratture, mAP50 fornisce un indicatore bilanciato delle performance del modello, considerando sia l'accuratezza nell'identificazione delle fratture che la precisione nella loro localizzazione anatomica. Questa soglia relativamente conservativa è clinicamente significativa poiché una localizzazione approssimativa ma corretta della frattura può comunque fornire informazioni diagnostiche utili per il clinico.
+Recall = TP / (TP + FN)
 
-### mAP50-95 
 
-La metrica mAP50-95 estende il concetto di mAP calcolando la media delle Average Precision su un range di soglie IoU che va da 0.5 a 0.95 con incrementi di 0.05. Questa metrica più rigorosa fornisce una valutazione più stringente della qualità della localizzazione spaziale, penalizzando le predizioni che, pur essendo sostanzialmente corrette, presentano imprecisioni nella delimitazione delle bounding box. Nel contesto medico, mAP50-95 è particolarmente prezioso per valutare la precisione geometrica del modello, aspetto fondamentale per applicazioni dove la localizzazione esatta della frattura può influenzare decisioni terapeutiche specifiche, come la pianificazione di interventi chirurgici o la valutazione dell'estensione del danno. Nei modelli di regressione applicati alla localizzazione, questa metrica valuta la capacità di predire con alta precisione le coordinate delle bounding box, mentre nei sistemi di classificazione con componenti di localizzazione, misura l'accuratezza complessiva del sistema nel fornire informazioni spaziali dettagliate e clinicamente rilevanti
+In termini clinici, quantifica la capacità del sistema di **non perdere fratture effettivamente presenti**, rappresentando un indicatore critico per la sicurezza del paziente.
+
+Un **recall** elevato è particolarmente importante nella diagnostica medica poiché una frattura non diagnosticata può comportare gravi conseguenze: dolore prolungato, complicazioni e danni permanenti.
+
+Nei modelli di **classificazione**, valuta la completezza del riconoscimento; nei sistemi di **detection**, considera la capacità di individuare **tutte le istanze** di fratture presenti, indipendentemente da posizione o dimensione.
+
+
+### mAP50
+La **mAP50** rappresenta la media delle **Average Precision** calcolate per tutte le classi del modello, utilizzando una soglia di:
+
+IoU = 0.5
+
+
+L’**IoU** (*Intersection over Union*) misura la sovrapposizione tra la **bounding box** predetta e quella reale (*ground truth*).  
+La soglia **0.5** è relativamente permissiva: una predizione è considerata corretta se la sovrapposizione è almeno del **50%**.
+
+Questa metrica è particolarmente rilevante nei modelli di **object detection**, poiché valuta simultaneamente **classificazione** e **localizzazione spaziale**.
+
+Nel contesto del riconoscimento di fratture, fornisce un indicatore bilanciato delle performance del modello, considerando sia l’accuratezza nell’identificazione che la precisione nella localizzazione anatomica.
+
+
+### mAP50-95
+La **mAP50-95** estende il calcolo della **mAP** su un range di soglie **IoU** da:
+
+IoU = 0.5 a IoU = 0.95
+
+
+Questa metrica è più rigorosa e penalizza predizioni che, pur corrette, presentano **imprecisioni nella delimitazione** delle **bounding box**.
+
+In ambito medico, la **mAP50-95** è particolarmente preziosa per valutare la **precisione geometrica** della localizzazione, fondamentale in casi dove la posizione esatta della frattura può influenzare decisioni terapeutiche come:
+- pianificazione di interventi chirurgici
+- valutazione dell’estensione del danno
+
+Nei modelli di regressione applicati alla localizzazione, valuta la capacità di predire coordinate con **alta precisione**; nei sistemi di classificazione con localizzazione, misura l’accuratezza complessiva delle informazioni spaziali fornite.
