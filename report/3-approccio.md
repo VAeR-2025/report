@@ -26,6 +26,10 @@ nell'immagine sopra è possibile vedere un esempio di come sono strutturate le i
 
 Vista la particolare conformazione delle bounding box presenti nel dataset, inizialmente si era considerata la possibilità di trasformarle in una versione standard, ovvero utilizzando le coordinate di un singolo punto di riferimento accompagnate da larghezza e altezza del rettangolo contenitore. Tuttavia, questo approccio presentava significative limitazioni: le bounding box risultanti erano eccessivamente grandi e spesso includevano ampie porzioni di sfondo non rilevante, creando un rapporto sfavorevole tra l'area dell'oggetto di interesse e l'area totale della bounding box. Questa sproporzione impediva alle reti neurali di convergere efficacemente durante il processo di addestramento, compromettendo le prestazioni del modello nella fase di detection degli oggetti target.
 
+I risultati degli addestramenti effettuati con le bounding box standard non sono riportati in questo lavoro poiché il modello non riusciva a convergere durante il processo di training. Il motivo principale di questa problematica risiede nel fatto che le bounding box rettangolari, essendo eccessivamente estese, non erano sufficientemente focalizzate sulla regione della frattura, includendo invece ampie aree di tessuto osseo sano e sfondo radiologico. Questa mancanza di precisione nella delimitazione dell'area di interesse ha reso impossibile per la rete neurale identificare efficacemente i pattern distintivi delle fratture, impedendo così il raggiungimento di una convergenza stabile durante l'addestramento.
+
+![Immagine di esempio delle bounding box standard](../diagram/dataset2.png)
+
 ---
 
 ## Il Modello YOLOv8m-OBB
