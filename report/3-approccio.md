@@ -297,30 +297,9 @@ Un **recall** elevato è particolarmente importante nella diagnostica medica poi
 Nei modelli di **classificazione**, valuta la completezza del riconoscimento; nei sistemi di **detection**, considera la capacità di individuare **tutte le istanze** di fratture presenti, indipendentemente da posizione o dimensione.
 
 
-### mAP50
-La **mAP50** rappresenta la media delle **Average Precision** calcolate per tutte le classi del modello, utilizzando una soglia di:
+### mAP@0.5 e mAP@0.5:0.95
+Il **mAP (mean Average Precision)** rappresenta una delle metriche principali per valutare i modelli di **object detection**, poiché combina in un unico valore sia la **precisione** sia la **capacità di localizzazione** delle predizioni.
 
-IoU = 0.5
+- **mAP@0.5**: misura la media della precisione considerando corretta una predizione se l’**IoU (Intersection over Union)** tra il bounding box predetto e quello reale è almeno pari a **0.5**. In pratica, valuta quanto bene il modello riesce a individuare gli oggetti con una sovrapposizione minima accettabile.
 
-
-L’**IoU** (*Intersection over Union*) misura la sovrapposizione tra la **bounding box** predetta e quella reale (*ground truth*).  
-La soglia **0.5** è relativamente permissiva: una predizione è considerata corretta se la sovrapposizione è almeno del **50%**.
-
-Questa metrica è particolarmente rilevante nei modelli di **object detection**, poiché valuta simultaneamente **classificazione** e **localizzazione spaziale**.
-
-Nel contesto del riconoscimento di fratture, fornisce un indicatore bilanciato delle performance del modello, considerando sia l’accuratezza nell’identificazione che la precisione nella localizzazione anatomica.
-
-
-### mAP50-95
-La **mAP50-95** estende il calcolo della **mAP** su un range di soglie **IoU** da:
-
-IoU = 0.5 a IoU = 0.95
-
-
-Questa metrica è più rigorosa e penalizza predizioni che, pur corrette, presentano **imprecisioni nella delimitazione** delle **bounding box**.
-
-In ambito medico, la **mAP50-95** è particolarmente preziosa per valutare la **precisione geometrica** della localizzazione, fondamentale in casi dove la posizione esatta della frattura può influenzare decisioni terapeutiche come:
-- pianificazione di interventi chirurgici
-- valutazione dell’estensione del danno
-
-Nei modelli di regressione applicati alla localizzazione, valuta la capacità di predire coordinate con **alta precisione**; nei sistemi di classificazione con localizzazione, misura l’accuratezza complessiva delle informazioni spaziali fornite.
+- **mAP@0.5:0.95**: calcola la media dei valori di precisione ottenuti su più soglie di IoU comprese tra **0.5 e 0.95**, con incrementi di 0.05. Questa variante è più severa e fornisce una misura più completa, poiché valuta non solo la capacità del modello di rilevare gli oggetti, ma anche la sua **accuratezza nel delinearne i contorni**.
