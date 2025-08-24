@@ -18,6 +18,16 @@ L'architettura **YOLOv8** con meccanismo **Hybrid-Attention (HA)** ha portato pr
 
 Il modello **FCE-YOLOv8** incorpora Feature Context Excitation Modules che migliorano la rilevazione di fratture sottili nelle radiografie. Su un dataset di training di **14.204**, di validation di **4.094** e test di **2.029** immagini, raggiunge una **mAP@0.5** del **65,78%** ([arXiv, 2024](https://arxiv.org/html/2410.01031v1)).
 
+## Importanza degli iperparametri
+
+La ricerca [Exploring the impact of hyperparameter and data augmentation in YOLO V10 for accurate bone fracture detection from X-ray images](https://www.nature.com/articles/s41598-025-93505-4#Sec15) analizza l'efficacia del modello YOLO V10 per la detection automatica di fratture ossee nelle radiografie, con focus su ottimizzazione degli iperparametri e data augmentation.
+Metodologia:
+Il modello utilizza tecniche di image augmentation tramite unsharp masking e CLAHE prima dell'addestramento, analizzando sistematicamente l'influenza di iperparametri come numero di epoche e learning rate.
+
+Il dataset era formato da **4.148** suddivise in **7** classi, hanno attenuto una accuratezza del **96,4%**, l'analisi statistica della precisione di classificazione tra le immagini aumentate e quelle grezze è risultata rispettivamente pari a **0,98** e **0,95**.
+
+
+
 ## Ensemble Learning
 
 I modelli ensemble combinano multiple architetture CNN per migliorare l'accuratezza diagnostica. Un recente studio utilizza un ensemble di **4 modelli** (**ResNet-50**, **VGG-16**, **Inception-v3**, **Inception-v2**) con tecnica di voting pesato per la rilevazione di fratture dell'omero ([ScienceDirect, 2024](https://www.sciencedirect.com/science/article/pii/S0009926024004197)). Il modello ensemble raggiunge una accuracy del **92%**, precisione del **92%**, recall del **91%** e F1-score del **92%** su un dataset di **6.542** radiografie.
